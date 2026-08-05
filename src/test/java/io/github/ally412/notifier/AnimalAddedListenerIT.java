@@ -18,13 +18,10 @@ import static org.mockito.Mockito.verify;
  * because the two apps share no code. If the shelter's wire format drifts, this test is what
  * notices.
  * <p>
- * The notifier normally has no producer at all, so the test supplies String serializers to
- * write raw text onto the topic.
+ * The app's own KafkaTemplate writes that text — its DelegatingByTypeSerializer carries a String
+ * entry precisely so raw JSON can be pushed onto a topic, as here.
  */
-@SpringBootTest(properties = {
-        "spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer",
-        "spring.kafka.producer.value-serializer=org.apache.kafka.common.serialization.StringSerializer"
-})
+@SpringBootTest
 @Testcontainers
 class AnimalAddedListenerIT {
 
@@ -33,7 +30,7 @@ class AnimalAddedListenerIT {
     static ConfluentKafkaContainer kafka = new ConfluentKafkaContainer("confluentinc/cp-kafka:7.8.0");
 
     @Autowired
-    KafkaTemplate<String, String> kafkaTemplate;
+    KafkaTemplate<String, Object> kafkaTemplate;
 
     @MockitoSpyBean
     AnimalAddedListener listener;
