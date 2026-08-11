@@ -1,0 +1,27 @@
+name: notifier
+
+# The broker lives in the shelter repo's compose file and is shared; this app dials it
+# on localhost:9092. Its database, though, is its own — declared here so the notifier
+# can be started without cloning the shelter, and so the shelter's `down -v` cannot
+# wipe it.
+services:
+  postgres:
+    image: postgres:17
+    container_name: notifier-postgres
+    environment:
+      POSTGRES_DB: notifier
+      POSTGRES_USER: notifier
+      POSTGRES_PASSWORD: notifier
+    ports:
+      - "5433:5432"        # 5432 is taken by the shelter's database
+    volumes:
+      - notifier_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "notifier"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  notifier_data:
