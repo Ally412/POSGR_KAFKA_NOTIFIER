@@ -31,18 +31,8 @@ import java.util.Map;
 public class KafkaErrorHandlingConfig {
     @Value("${shelter.kafka.replicas:1}")
     private short replicas;
-    /**
-     * A failed record is logged AND republished to shelter.animal.added.DLT. The log serves
-     * whoever is watching the console now; the dead letter topic keeps the message itself, so
-     * it can be inspected, counted and replayed once the cause is fixed.
-     */
     @Bean
     public CommonErrorHandler commonErrorHandler(KafkaTemplate<String, Object> kafkaTemplate) {
-        // The destination is resolved explicitly rather than left to the default, which appends
-        // "-dlt" to the source topic name. Relying on that convention silently auto-created a
-        // SECOND topic with one partition, so any failure on partition 1 or 2 would have had
-        // nowhere to go. Naming it here keeps the constant authoritative for both the NewTopic
-        // bean above and the publishing, and same-partition routing needs the 3 declared there.
         DeadLetterPublishingRecoverer publisher =  new DeadLetterPublishingRecoverer(kafkaTemplate,
                 (record, exception) -> new TopicPartition(Topics.ANIMAL_ADDED_DLT, record.partition()));
 
@@ -75,7 +65,7 @@ public class KafkaErrorHandlingConfig {
                 record.topic(),
                 record.partition(),
                 record.offset(),
-                record.key(),                 // the key still parses; only the value failed
+                record.key(),
                 rawValueOf(exception),
                 NestedExceptionUtils.getMostSpecificCause(exception).getMessage());
     }
