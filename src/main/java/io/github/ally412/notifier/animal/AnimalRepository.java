@@ -1,4 +1,4 @@
-package io.github.ally412.notifier;
+package io.github.ally412.notifier.animal;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -37,4 +37,26 @@ public interface AnimalRepository extends JpaRepository<Animal, Long> {
               @Param("status") String status,
               @Param("intakeDate") LocalDate intakeDate,
               @Param("version") long version);
+
+    /**
+     * Moves an animal to ADOPTED. Separate from {@link #apply} because AdoptionCompleted carries
+     * only the animal's id and name — it cannot rebuild a whole row, so it touches one column.
+     * <p>
+     * The same version rule applies, and here it finally does real work: this is the first event
+     * that changes state an earlier event already wrote, so an AnimalAdded redelivered after the
+     * adoption must not set the status back.
+     * <p>
+     * Returns 0 both when the animal is unknown here and when the event is not newer than the
+     * stored row. The caller distinguishes them, because the first means the read model drifted.
+     */
+    @Modifying
+    @Query(value = """
+            UPDATE animal
+               SET status     = 'ADOPTED',
+                   version    = :version,
+                   updated_at = now()
+             WHERE animal_id = :animalId
+               AND version < :version
+            """, nativeQuery = true)
+    int markAdopted(@Param("animalId") Long animalId, @Param("version") long version);
 }
