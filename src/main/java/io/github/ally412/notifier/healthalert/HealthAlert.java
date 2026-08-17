@@ -31,4 +31,6 @@ public class HealthAlert {
     private LocalDate treatmentDate;
     private Long eventId;
     private Instant receivedAt;
+    // null until the digest has told someone; this column is what makes the table a work queue
+    private Instant notifiedAt;
 }

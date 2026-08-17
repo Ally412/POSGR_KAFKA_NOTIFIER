@@ -13,5 +13,6 @@ public final class Topics {
     public static final String DLT_SUFFIX = ".DLT";
     public static final String ANIMAL_ADDED_DLT = ANIMAL_ADDED + DLT_SUFFIX;
     public static final String HEALTH_ALERT_DLT = HEALTH_ALERT + DLT_SUFFIX;
+    public static final String ADOPTION_COMPLETED_DLT = ADOPTION_COMPLETED + DLT_SUFFIX;
     private Topics() {}
 }

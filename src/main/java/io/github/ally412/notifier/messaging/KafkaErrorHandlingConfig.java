@@ -65,6 +65,11 @@ public class KafkaErrorHandlingConfig {
         return deadLetterTopic(Topics.HEALTH_ALERT_DLT);
     }
 
+    @Bean
+    public NewTopic adoptionCompletedDeadLetterTopic() {
+        return deadLetterTopic(Topics.ADOPTION_COMPLETED_DLT);
+    }
+
     private NewTopic deadLetterTopic(String name) {
         return TopicBuilder.name(name).partitions(3).replicas(replicas).build();
     }
