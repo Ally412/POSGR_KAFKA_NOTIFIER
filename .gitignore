@@ -11,3 +11,6 @@ build/
 
 # OS
 .DS_Store
+
+# Claude Code — local settings and commands, not part of the project
+.claude/
