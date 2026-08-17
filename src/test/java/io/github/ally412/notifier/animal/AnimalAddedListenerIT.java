@@ -1,4 +1,6 @@
-package io.github.ally412.notifier;
+package io.github.ally412.notifier.animal;
+
+import io.github.ally412.notifier.messaging.Topics;
 
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Test;

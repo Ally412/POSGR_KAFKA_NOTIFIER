@@ -1,4 +1,4 @@
-package io.github.ally412.notifier;
+package io.github.ally412.notifier.animal;
 
 import java.time.LocalDate;
 

@@ -1,4 +1,6 @@
-package io.github.ally412.notifier;
+package io.github.ally412.notifier.animal;
+
+import io.github.ally412.notifier.messaging.Topics;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
