@@ -23,5 +23,17 @@ services:
       timeout: 5s
       retries: 5
 
+  # A mail catcher, not a mail server: it accepts everything the digest sends and delivers
+  # none of it, so alerts can be read at http://localhost:8025 without a real mailbox. In
+  # production MAIL_HOST and MAIL_PORT point at an actual relay instead.
+  # The tests do not use this — they run GreenMail inside the JVM.
+  mailpit:
+    image: axllent/mailpit
+    container_name: notifier-mailpit
+    ports:
+      - "1025:1025"        # SMTP, the port application.properties dials by default
+      - "8025:8025"        # web UI, where the digests can be read
+    restart: unless-stopped
+
 volumes:
   notifier_data:
